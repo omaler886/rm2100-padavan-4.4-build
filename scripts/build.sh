@@ -63,7 +63,11 @@ echo "Building RM2100 $PROFILE with $JOBS jobs"
 cd "$SRC/trunk"
 rm -rf images
 
-export MAKEFLAGS="-j${JOBS}"
+# The top-level Makefile treats tools/libs/user/romfs as independent targets;
+# a parallel top-level make can run user_only before libs_only.  Keep the
+# top level serial; the kernel sub-make and individual library builds already
+# set their own parallelism.
+export MAKEFLAGS="-j1"
 
 build_command=(./build_firmware_modify RM2100 custom)
 if [ "$(id -u)" -ne 0 ]; then
