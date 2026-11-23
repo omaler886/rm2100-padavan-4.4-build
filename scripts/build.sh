@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+ulimit -n 4096 2>/dev/null || true
+
 PROFILE="${1:-1000mhz}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 WORK="${WORK:-$ROOT/work}"
@@ -47,6 +49,8 @@ python3 "$ROOT/scripts/render-profile.py" \
   "$ROOT/profiles/$PROFILE.conf" \
   "$SRC/trunk/configs/templates/RM2100.config"
 
+python3 "$ROOT/scripts/patch-source.py" "$SRC"
+
 # build_firmware_modify only copies the template into .config inside its
 # "$2 is empty" branch.  We pass a second argument to skip that branch's
 # plugin overrides, so seed .config ourselves.
@@ -58,14 +62,6 @@ echo "Preparing MIPS toolchain"
 echo "Building RM2100 $PROFILE with $JOBS jobs"
 cd "$SRC/trunk"
 rm -rf images
-
-echo "Prebuilding host tools serially"
-export ROOTDIR="$SRC/trunk"
-if ! make -j1 tools > "$OUT/tools.log" 2>&1; then
-  tail -40 "$OUT/tools.log" >&2
-  echo "host tools build failed" >&2
-  exit 1
-fi
 
 export MAKEFLAGS="-j${JOBS}"
 
