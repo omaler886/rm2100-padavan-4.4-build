@@ -6,6 +6,9 @@ Pinned commit: `10893720a7a620869c920a8c6bde41eb28df573b`
 
 Build host: WSL Debian 13 `king` (12 vCPU, 16 GiB), `gcc 14.2.0-19`.
 
+GitHub release:
+`https://github.com/omaler886/rm2100-padavan-4.4-build/releases/tag/v2026.11.24-rm2100-4.4`
+
 ## Artifacts
 
 | Profile | File | Size | SHA256 |
