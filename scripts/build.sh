@@ -60,6 +60,7 @@ cd "$SRC/trunk"
 rm -rf images
 
 echo "Prebuilding host tools serially"
+export ROOTDIR="$SRC/trunk"
 if ! make -j1 tools > "$OUT/tools.log" 2>&1; then
   tail -40 "$OUT/tools.log" >&2
   echo "host tools build failed" >&2
