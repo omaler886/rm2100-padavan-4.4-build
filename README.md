@@ -52,6 +52,11 @@ Artifacts land in `out/<profile>/`:
 - `firmware.config`
 - `kernel-4.4.config`
 
+## Current artifacts
+
+See [BUILD-RESULTS.md](BUILD-RESULTS.md) for the 2026-11-24 hashes,
+static verification and QEMU smoke-test results.
+
 ## Security notes
 
 - Padavan builds ship with the default `admin` / `admin` web login. Change it
