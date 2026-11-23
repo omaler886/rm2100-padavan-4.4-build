@@ -30,7 +30,7 @@ mkdir -p "$WORK" "$OUT"
 if [ ! -f "$SRC_ARCHIVE" ]; then
   echo "Downloading source archive for $UPSTREAM_COMMIT"
   curl -fL --retry 3 --retry-delay 2 \
-    "${UPSTREAM_URL%/}/archive/${UPSTREAM_COMMIT}.tar.gz" \
+    "${UPSTREAM_URL%.git}/archive/${UPSTREAM_COMMIT}.tar.gz" \
     -o "$SRC_ARCHIVE"
 fi
 
