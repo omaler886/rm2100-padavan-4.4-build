@@ -58,6 +58,14 @@ echo "Preparing MIPS toolchain"
 echo "Building RM2100 $PROFILE with $JOBS jobs"
 cd "$SRC/trunk"
 rm -rf images
+
+echo "Prebuilding host tools serially"
+if ! make -j1 tools > "$OUT/tools.log" 2>&1; then
+  tail -40 "$OUT/tools.log" >&2
+  echo "host tools build failed" >&2
+  exit 1
+fi
+
 export MAKEFLAGS="-j${JOBS}"
 
 build_command=(./build_firmware_modify RM2100 custom)
