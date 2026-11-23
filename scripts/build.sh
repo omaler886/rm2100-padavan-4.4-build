@@ -47,6 +47,11 @@ python3 "$ROOT/scripts/render-profile.py" \
   "$ROOT/profiles/$PROFILE.conf" \
   "$SRC/trunk/configs/templates/RM2100.config"
 
+# build_firmware_modify only copies the template into .config inside its
+# "$2 is empty" branch.  We pass a second argument to skip that branch's
+# plugin overrides, so seed .config ourselves.
+cp "$SRC/trunk/configs/templates/RM2100.config" "$SRC/trunk/.config"
+
 echo "Preparing MIPS toolchain"
 (cd "$SRC/toolchain-mipsel" && sh dl_toolchain.sh)
 
