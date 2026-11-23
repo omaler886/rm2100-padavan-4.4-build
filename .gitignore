@@ -1,0 +1,8 @@
+work/
+out/
+__pycache__/
+*.pyc
+*.trx
+*.log
+*.squashfs
+
