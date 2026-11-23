@@ -38,6 +38,7 @@ echo "Extracting source archive"
 rm -rf "$SRC"
 mkdir -p "$SRC"
 tar -xzf "$SRC_ARCHIVE" -C "$SRC" --strip-components=1
+rm -f "$SRC_ARCHIVE"
 
 echo "Rendering profile $PROFILE"
 python3 "$ROOT/scripts/render-profile.py" \
