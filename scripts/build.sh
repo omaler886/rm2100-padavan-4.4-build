@@ -60,8 +60,13 @@ cd "$SRC/trunk"
 rm -rf images
 export MAKEFLAGS="-j${JOBS}"
 
+build_command=(./build_firmware_modify RM2100 custom)
+if [ "$(id -u)" -ne 0 ]; then
+  build_command=(fakeroot "${build_command[@]}")
+fi
+
 set +e
-fakeroot ./build_firmware_modify RM2100 custom 2>&1 | tee "$OUT/build.log"
+"${build_command[@]}" 2>&1 | tee "$OUT/build.log"
 build_rc="${PIPESTATUS[0]}"
 set -e
 if [ "$build_rc" -ne 0 ]; then
