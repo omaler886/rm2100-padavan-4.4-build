@@ -21,6 +21,8 @@ UPSTREAM_URL="$(sed -n 's/^UPSTREAM_URL=//p' "$ROOT/source.lock")"
 UPSTREAM_COMMIT="$(sed -n 's/^UPSTREAM_COMMIT=//p' "$ROOT/source.lock")"
 JOBS="${JOBS:-$(nproc)}"
 SRC_ARCHIVE="$WORK/padavan-4.4-$UPSTREAM_COMMIT.tar.gz"
+SOURCE_TARBALL="${SOURCE_TARBALL:-}"
+TOOLCHAIN_TARBALL="${TOOLCHAIN_TARBALL:-}"
 
 if [ -z "$UPSTREAM_URL" ] || [ -z "$UPSTREAM_COMMIT" ]; then
   echo "source.lock is incomplete" >&2
@@ -30,10 +32,15 @@ fi
 mkdir -p "$WORK" "$OUT"
 
 if [ ! -f "$SRC_ARCHIVE" ]; then
-  echo "Downloading source archive for $UPSTREAM_COMMIT"
-  curl -fL --retry 3 --retry-delay 2 \
-    "${UPSTREAM_URL%.git}/archive/${UPSTREAM_COMMIT}.tar.gz" \
-    -o "$SRC_ARCHIVE"
+  if [ -n "$SOURCE_TARBALL" ] && [ -f "$SOURCE_TARBALL" ]; then
+    echo "Using local source archive: $SOURCE_TARBALL"
+    cp "$SOURCE_TARBALL" "$SRC_ARCHIVE"
+  else
+    echo "Downloading source archive for $UPSTREAM_COMMIT"
+    curl -fL --retry 3 --retry-delay 2 \
+      "${UPSTREAM_URL%.git}/archive/${UPSTREAM_COMMIT}.tar.gz" \
+      -o "$SRC_ARCHIVE"
+  fi
 fi
 
 echo "Extracting source archive"
@@ -57,6 +64,11 @@ python3 "$ROOT/scripts/patch-source.py" "$SRC"
 cp "$SRC/trunk/configs/templates/RM2100.config" "$SRC/trunk/.config"
 
 echo "Preparing MIPS toolchain"
+if [ -n "$TOOLCHAIN_TARBALL" ] && [ -f "$TOOLCHAIN_TARBALL" ]; then
+  echo "Using local MIPS toolchain archive: $TOOLCHAIN_TARBALL"
+  mkdir -p "$SRC/toolchain-mipsel/toolchain-4.4.x"
+  tar -xf "$TOOLCHAIN_TARBALL" -C "$SRC/toolchain-mipsel/toolchain-4.4.x"
+fi
 (cd "$SRC/toolchain-mipsel" && sh dl_toolchain.sh)
 
 echo "Building RM2100 $PROFILE with $JOBS jobs"
